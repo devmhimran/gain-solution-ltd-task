@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 
 import './globals.css';
 import { Loading } from '@/components/shared';
+import { DefaultProviders } from '@/components/providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${inter.className} antialiased`}>
-        <Suspense fallback={<Loading />}>{children}</Suspense>
+        <Suspense fallback={<Loading />}>
+          <DefaultProviders>{children}</DefaultProviders>
+        </Suspense>
       </body>
     </html>
   );

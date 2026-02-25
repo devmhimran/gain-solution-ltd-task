@@ -2,6 +2,7 @@
 
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button, Input, Modal, Sidebar } from '@/components/shared';
 
@@ -11,6 +12,9 @@ export default function DashboardAnalytics() {
   return (
     <div className='container mx-auto'>
       DashboardAnalytics
+      <button onClick={() => toast.info('My first toast')}>
+        Give me a toast
+      </button>
       <div>
         <Button
           rightIcon={<Plus className='w-5 h-5' />}
