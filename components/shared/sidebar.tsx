@@ -1,3 +1,5 @@
+import { X } from 'lucide-react';
+import { Fragment, ReactNode } from 'react';
 import {
   Dialog,
   DialogPanel,
@@ -6,12 +8,12 @@ import {
   Transition,
   TransitionChild,
 } from '@headlessui/react';
-import { Fragment, ReactNode, Dispatch, SetStateAction } from 'react';
-import { X } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 
 interface SidebarProps {
   isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setIsOpen: (open: boolean) => void;
   title: string;
   description?: string;
   children: ReactNode;
@@ -19,7 +21,7 @@ interface SidebarProps {
   reset?: () => void;
 }
 
-export default function Sidebar({
+export function Sidebar({
   isOpen,
   setIsOpen,
   title,
@@ -33,7 +35,7 @@ export default function Sidebar({
     if (reset) reset();
   };
 
-  const sideClasses = side === 'left' ? 'left-0 border-r' : 'right-0 border-l';
+  const sideClasses = side === 'left' ? 'border-r' : 'border-l';
 
   const translateFrom =
     side === 'left' ? '-translate-x-full' : 'translate-x-full';
@@ -60,7 +62,12 @@ export default function Sidebar({
         <div className='fixed inset-0 overflow-hidden'>
           <div className='absolute inset-0 overflow-hidden'>
             <div
-              className={`fixed inset-y-0 flex max-w-sm ${side === 'left' ? 'left-0' : 'right-0'}`}
+              className={cn(
+                'fixed inset-y-0 flex max-w-sm',
+                side === 'left'
+                  ? 'left-0 justify-start'
+                  : 'right-0 justify-end',
+              )}
             >
               <TransitionChild
                 as={Fragment}
@@ -76,37 +83,33 @@ export default function Sidebar({
                 >
                   <div className='flex flex-col h-full'>
                     <div className='mb-6'>
-                      <div className='flex items-start gap-4'>
-                        {side === 'right' && (
-                          <button
-                            type='button'
-                            onClick={handleClose}
-                            className='cursor-pointer rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-slate-600 transition-colors'
-                          >
-                            <span className='sr-only'>Close panel</span>
-                            <X className='h-5 w-5' aria-hidden='true' />
-                          </button>
+                      <div
+                        className={cn(
+                          side === 'left'
+                            ? 'flex-row-reverse justify-between'
+                            : 'flex-row',
+                          'flex items-start gap-4',
                         )}
-                        <DialogTitle className='text-lg font-semibold leading-5.5 text-gray-900'>
-                          {title}
-                        </DialogTitle>
-                        {side === 'left' && (
-                          <button
-                            type='button'
-                            onClick={handleClose}
-                            className='cursor-pointer rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-slate-600 transition-colors'
-                          >
-                            <span className='sr-only'>Close panel</span>
-                            <X className='h-5 w-5' aria-hidden='true' />
-                          </button>
-                        )}
+                      >
+                        <button
+                          type='button'
+                          onClick={handleClose}
+                          className='cursor-pointer rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-slate-600 transition-colors'
+                        >
+                          <span className='sr-only'>Close panel</span>
+                          <X className='h-5 w-5' aria-hidden='true' />
+                        </button>
+                        <div>
+                          <DialogTitle className='text-lg font-semibold leading-5.5 text-gray-900'>
+                            {title}
+                          </DialogTitle>
+                          {description && (
+                            <Description className='text-sm text-gray-500'>
+                              {description}
+                            </Description>
+                          )}
+                        </div>
                       </div>
-
-                      {description && (
-                        <Description className='mt-2 text-sm text-gray-500 ml-8'>
-                          {description}
-                        </Description>
-                      )}
                     </div>
 
                     <div className='relative flex-1 overflow-y-auto'>

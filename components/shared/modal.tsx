@@ -18,7 +18,7 @@ interface ModalProps {
   reset?: () => void;
 }
 
-export default function Modal({
+export function Modal({
   isOpen,
   setIsOpen,
   title,
