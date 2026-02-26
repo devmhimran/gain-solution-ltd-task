@@ -1,0 +1,45 @@
+{
+  "students": [
+    { "id": "s1", "name": "John Doe", "gpa": 3.8, "year": 2024 },
+    { "id": "s2", "name": "Jane Smith", "gpa": 3.5, "year": 2025 },
+    { "id": "s3", "name": "Alex Johnson", "gpa": 3.9, "year": 2024 },
+    { "id": "s4", "name": "Emily Davis", "gpa": 3.2, "year": 2025 },
+    { "id": "s5", "name": "Michael Brown", "gpa": 3.6, "year": 2023 }
+  ],
+
+  "courses": [
+    {
+      "id": "c1",
+      "name": "Advanced React",
+      "facultyId": "f1",
+      "enrolledCount": 2
+    },
+    {
+      "id": "c2",
+      "name": "Node.js Fundamentals",
+      "facultyId": "f2",
+      "enrolledCount": 2
+    },
+    {
+      "id": "c3",
+      "name": "Database Design",
+      "facultyId": "f1",
+      "enrolledCount": 1
+    }
+  ],
+
+  "enrollments": [
+    { "id": "e1", "studentId": "s1", "courseId": "c1", "grade": "A" },
+    { "id": "e2", "studentId": "s3", "courseId": "c1", "grade": "A-" },
+
+    { "id": "e3", "studentId": "s2", "courseId": "c2", "grade": "B+" },
+    { "id": "e4", "studentId": "s4", "courseId": "c2", "grade": "B" },
+
+    { "id": "e5", "studentId": "s1", "courseId": "c3", "grade": "A" }
+  ],
+
+  "faculty": [
+    { "id": "f1", "name": "Dr. Smith" },
+    { "id": "f2", "name": "Prof. Anderson" }
+  ]
+}
