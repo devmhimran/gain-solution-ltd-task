@@ -2,7 +2,8 @@
 
 import { apiKit } from '@/lib/api-kit';
 import { useStudentsStore } from '@/store';
-import { Course, Enrollment, Student } from '@/types';
+import { ICourse, IGrades, IStudent } from '@/types';
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function useStudents() {
@@ -10,7 +11,7 @@ export function useStudents() {
   const addStudentToStore = useStudentsStore((state) => state.addStudent);
 
   const createStudents = useMutation({
-    mutationFn: async (newStudent: Omit<Student, 'id'>) => {
+    mutationFn: async (newStudent: Omit<IStudent, 'id'>) => {
       const mockId = Math.random().toString(36).substr(2, 9);
       return { ...newStudent, id: mockId };
     },
@@ -32,15 +33,15 @@ export function useGetStudents(params?: string) {
   return useQuery({
     queryKey: ['students', params],
     queryFn: async () => {
-      const [studentsRes, coursesRes, enrollmentsRes] = await Promise.all([
+      const [studentsRes, coursesRes, gradesRes] = await Promise.all([
         apiKit.students.getStudents(),
         apiKit.courses.getCourses(),
-        apiKit.enrollments.getEnrollments(),
+        apiKit.grades.getGrades(),
       ]);
 
       const students = studentsRes.data;
       const courses = coursesRes.data;
-      const enrollments = enrollmentsRes.data;
+      const grades = gradesRes.data;
 
       const searchParams = new URLSearchParams(params);
 
@@ -51,68 +52,53 @@ export function useGetStudents(params?: string) {
       const page = Number(searchParams.get('page') ?? 1);
       const limit = Number(searchParams.get('limit') ?? 10);
 
-      let result = students.map((student: Student) => {
-        const studentEnrollments = enrollments.filter(
-          (e: Enrollment) => e.studentId === student.id,
+      let result = students.map((student: IStudent) => {
+        const studentGrades = grades.filter(
+          (grade: IGrades) => grade.studentId === student.id,
+        );
+        const enrolledCourses = courses.filter((course: ICourse) =>
+          studentGrades.find((grade: IGrades) => grade.courseId === course.id),
         );
 
-        const studentCourses = studentEnrollments.map((en: Enrollment) => {
-          const course = courses.find((c: Course) => c.id === en.courseId);
-          return {
-            id: course?.id,
-            name: course?.name,
-            grade: en.grade,
-          };
-        });
-
-        return {
-          ...student,
-          courses: studentCourses,
-        };
+        return { ...student, courses: enrolledCourses };
       });
 
       if (search) {
         result = result.filter(
-          (s: Student) =>
-            s.name.toLowerCase().includes(search) ||
-            s.courses.some((c: Course) =>
-              c.name?.toLowerCase().includes(search),
+          (student: IStudent) =>
+            student.name.toLowerCase().includes(search) ||
+            student.courses.some((course: ICourse) =>
+              course.name.toLowerCase().includes(search),
             ),
         );
       }
 
+      if (year) {
+        result = result.filter(
+          (student: IStudent) => student.year === Number(year),
+        );
+      }
+
       if (course) {
-        result = result.filter((s: Student) =>
-          s.courses.some(
-            (c: Course) =>
-              c.name?.toLowerCase().includes(course) || c.id === course,
+        result = result.filter((student: IStudent) =>
+          student.courses.some((c: ICourse) =>
+            c.name.toLowerCase().includes(course),
           ),
         );
       }
 
-      if (year) {
-        const parsedYear = Number(year);
-        if (!Number.isNaN(parsedYear)) {
-          result = result.filter((s: Student) => s.year === parsedYear);
-        }
-      }
+      const sortedResult = [...result].reverse();
+      setStudents(sortedResult);
 
       const total = result.length;
       const start = (page - 1) * limit;
-      const end = start + limit;
-      const sortedResult = [...result].reverse();
-
-      setStudents(sortedResult);
-      const paginatedResult = sortedResult.slice(start, end);
+      const paginatedData = sortedResult.slice(start, start + limit);
 
       return {
-        data: paginatedResult,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit),
-        },
+        data: paginatedData,
+        total,
+        page,
+        limit,
       };
     },
   });

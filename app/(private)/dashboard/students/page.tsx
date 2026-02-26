@@ -46,7 +46,7 @@ export default function StudentsPage() {
         placeholder='Search students...'
         className='border p-2 rounded'
       />
-      <div>{JSON.stringify(data, null, 2)}</div>
+      <div className=''>{JSON.stringify(data, null, 2)}</div>
     </div>
   );
 }

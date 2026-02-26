@@ -6,40 +6,69 @@
     { "id": "s4", "name": "Emily Davis", "gpa": 3.2, "year": 2025 },
     { "id": "s5", "name": "Michael Brown", "gpa": 3.6, "year": 2023 }
   ],
-
   "courses": [
     {
       "id": "c1",
       "name": "Advanced React",
-      "facultyId": "f1",
-      "enrolledCount": 2
+      "facultyIds": ["f1", "f2"],
+      "enrolledCount": 45,
+      "metadata": { "room": "302", "credits": "4" }
     },
     {
       "id": "c2",
       "name": "Node.js Fundamentals",
-      "facultyId": "f2",
-      "enrolledCount": 2
+      "facultyIds": ["f2"],
+      "enrolledCount": 30,
+      "metadata": { "level": "Intermediate" }
     },
     {
       "id": "c3",
       "name": "Database Design",
-      "facultyId": "f1",
-      "enrolledCount": 1
+      "facultyIds": ["f1", "f3"],
+      "enrolledCount": 50,
+      "metadata": { "lab": "Required" }
     }
   ],
-
-  "enrollments": [
-    { "id": "e1", "studentId": "s1", "courseId": "c1", "grade": "A" },
-    { "id": "e2", "studentId": "s3", "courseId": "c1", "grade": "A-" },
-
-    { "id": "e3", "studentId": "s2", "courseId": "c2", "grade": "B+" },
-    { "id": "e4", "studentId": "s4", "courseId": "c2", "grade": "B" },
-
-    { "id": "e5", "studentId": "s1", "courseId": "c3", "grade": "A" }
-  ],
-
   "faculty": [
     { "id": "f1", "name": "Dr. Smith" },
-    { "id": "f2", "name": "Prof. Anderson" }
+    { "id": "f2", "name": "Prof. Anderson" },
+    { "id": "f3", "name": "Dr. Miller" }
+  ],
+  "grades": [
+    {
+      "id": "g1",
+      "studentId": "s1",
+      "courseId": "c1",
+      "grade": "A",
+      "term": "Midterm"
+    },
+    {
+      "id": "g2",
+      "studentId": "s1",
+      "courseId": "c1",
+      "grade": "A-",
+      "term": "Finals"
+    },
+    {
+      "id": "g3",
+      "studentId": "s2",
+      "courseId": "c2",
+      "grade": "B+",
+      "term": "Assignment 1"
+    },
+    {
+      "id": "g4",
+      "studentId": "s3",
+      "courseId": "c1",
+      "grade": "Pending",
+      "term": "Initial Assignment"
+    },
+    {
+      "id": "g5",
+      "studentId": "s1",
+      "courseId": "c3",
+      "grade": "A",
+      "term": "Project"
+    }
   ]
 }

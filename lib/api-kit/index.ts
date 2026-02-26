@@ -13,6 +13,12 @@ export const apiKit = {
       return apiInstance.get(url);
     },
   },
+  grades: {
+    getGrades: async () => {
+      const url = `/grades`;
+      return apiInstance.get(url);
+    },
+  },
   enrollments: {
     getEnrollments: async () => {
       const url = `/enrollments`;
