@@ -27,3 +27,11 @@ export interface IFaculty {
   id: string;
   name: string;
 }
+
+export interface IApiResponse<X> {
+  data: X;
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}

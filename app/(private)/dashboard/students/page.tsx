@@ -1,6 +1,9 @@
 'use client';
 
-import { StudentPageHeader } from '@/components/pages/students';
+import {
+  StudentDataTable,
+  StudentPageHeader,
+} from '@/components/pages/students';
 import { useGetStudents } from '@/hooks/use-students';
 import { generateQueryString } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -39,7 +42,7 @@ export default function StudentsPage() {
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className='space-y-10 w-4/6 mx-auto'>
+    <div className='space-y-10 w-full md:w-4/6 mx-auto'>
       <StudentPageHeader
         searchQuery={searchQuery}
         searchQueryChange={(e) => {
@@ -54,9 +57,8 @@ export default function StudentsPage() {
           }))
         }
       />
-      <div>
-        <div className=''>{JSON.stringify(data, null, 2)}</div>
-      </div>
+
+      <StudentDataTable data={data} />
     </div>
   );
 }

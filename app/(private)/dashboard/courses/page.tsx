@@ -1,6 +1,6 @@
 'use client';
 
-import { CoursePageHeader } from '@/components/pages/course';
+import { CourseDataTable, CoursePageHeader } from '@/components/pages/course';
 import { useGetCourses } from '@/hooks/use-course';
 import { generateQueryString } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -38,7 +38,7 @@ export default function CoursesPage() {
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className='space-y-10 w-4/6 mx-auto'>
+    <div className='space-y-10 w-full md:w-4/6 mx-auto'>
       <CoursePageHeader
         searchQuery={searchQuery}
         searchQueryChange={(e) => {
@@ -46,7 +46,7 @@ export default function CoursesPage() {
           debounced(e.target.value);
         }}
       />
-      <div>{JSON.stringify(data, null, 2)}</div>
+      <CourseDataTable data={data} />
     </div>
   );
 }
