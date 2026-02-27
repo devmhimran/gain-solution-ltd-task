@@ -10,8 +10,8 @@ interface IStore {
   setCourses: (courses: ICourse[]) => void;
   addCourse: (course: ICourse) => void;
 
-  faculty: IFaculty[];
-  setFaculty: (faculty: IFaculty[]) => void;
+  faculties: IFaculty[];
+  setFaculties: (faculty: IFaculty[]) => void;
   addFaculty: (faculty: IFaculty) => void;
 
   grades: IGrades[];
@@ -22,7 +22,7 @@ interface IStore {
 export const useStore = create<IStore>((set) => ({
   students: [],
   courses: [],
-  faculty: [],
+  faculties: [],
   grades: [],
 
   setStudents: (students) => set({ students }),
@@ -37,10 +37,10 @@ export const useStore = create<IStore>((set) => ({
       courses: [...state.courses, course],
     })),
 
-  setFaculty: (faculty) => set({ faculty }),
+  setFaculties: (faculties) => set({ faculties }),
   addFaculty: (faculty) =>
     set((state) => ({
-      faculty: [...state.faculty, faculty],
+      faculties: [...state.faculties, faculty],
     })),
 
   setGrades: (grades) => set({ grades }),

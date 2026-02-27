@@ -39,7 +39,7 @@ export default function StudentsPage() {
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className='space-y-10'>
+    <div className='space-y-10 w-4/6 mx-auto'>
       <StudentPageHeader
         searchQuery={searchQuery}
         searchQueryChange={(e) => {

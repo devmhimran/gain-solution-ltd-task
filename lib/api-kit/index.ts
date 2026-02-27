@@ -19,9 +19,9 @@ export const apiKit = {
       return apiInstance.get(url);
     },
   },
-  enrollments: {
-    getEnrollments: async () => {
-      const url = `/enrollments`;
+  faculties: {
+    getFaculties: async () => {
+      const url = `/faculty`;
       return apiInstance.get(url);
     },
   },

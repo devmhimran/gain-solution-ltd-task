@@ -9,7 +9,8 @@ export interface IStudent {
 export interface ICourse {
   id: string;
   name: string;
-  facultyId: string[];
+  facultyIds: string[];
+  faculty: IFaculty[];
   enrolledCount: number;
   metadata?: Record<string, string>;
 }
