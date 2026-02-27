@@ -1,14 +1,19 @@
 'use client';
 
-import { apiKit } from '@/lib/api-kit';
-import { useStudentsStore } from '@/store';
+import { useStore } from '@/store';
+
 import { ICourse, IGrades, IStudent } from '@/types';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 export function useStudents() {
   const queryClient = useQueryClient();
-  const addStudentToStore = useStudentsStore((state) => state.addStudent);
+  const addStudentToStore = useStore((state) => state.addStudent);
 
   const createStudents = useMutation({
     mutationFn: async (newStudent: Omit<IStudent, 'id'>) => {
@@ -28,27 +33,17 @@ export function useStudents() {
 }
 
 export function useGetStudents(params?: string) {
-  const setStudents = useStudentsStore((state) => state.setStudents);
+  const students = useStore((state) => state.students);
+  const courses = useStore((state) => state.courses);
+  const grades = useStore((state) => state.grades);
 
   return useQuery({
     queryKey: ['students', params],
     queryFn: async () => {
-      const [studentsRes, coursesRes, gradesRes] = await Promise.all([
-        apiKit.students.getStudents(),
-        apiKit.courses.getCourses(),
-        apiKit.grades.getGrades(),
-      ]);
-
-      const students = studentsRes.data;
-      const courses = coursesRes.data;
-      const grades = gradesRes.data;
-
       const searchParams = new URLSearchParams(params);
-
       const search = searchParams.get('search')?.toLowerCase();
       const course = searchParams.get('course')?.toLowerCase();
       const year = searchParams.get('year');
-
       const page = Number(searchParams.get('page') ?? 1);
       const limit = Number(searchParams.get('limit') ?? 10);
 
@@ -56,11 +51,15 @@ export function useGetStudents(params?: string) {
         const studentGrades = grades.filter(
           (grade: IGrades) => grade.studentId === student.id,
         );
+
         const enrolledCourses = courses.filter((course: ICourse) =>
           studentGrades.find((grade: IGrades) => grade.courseId === course.id),
         );
 
-        return { ...student, courses: enrolledCourses };
+        return {
+          ...student,
+          courses: enrolledCourses,
+        };
       });
 
       if (search) {
@@ -73,12 +72,6 @@ export function useGetStudents(params?: string) {
         );
       }
 
-      if (year) {
-        result = result.filter(
-          (student: IStudent) => student.year === Number(year),
-        );
-      }
-
       if (course) {
         result = result.filter((student: IStudent) =>
           student.courses.some((c: ICourse) =>
@@ -87,19 +80,24 @@ export function useGetStudents(params?: string) {
         );
       }
 
-      const sortedResult = [...result].reverse();
-      setStudents(sortedResult);
+      if (year) {
+        result = result.filter((s) => s.year === Number(year));
+      }
 
-      const total = result.length;
+      const sorted = [...result].reverse();
+      const total = sorted.length;
       const start = (page - 1) * limit;
-      const paginatedData = sortedResult.slice(start, start + limit);
+      const data = sorted.slice(start, start + limit);
 
       return {
-        data: paginatedData,
+        data,
         total,
         page,
         limit,
+        totalPages: Math.ceil(total / limit),
       };
     },
+    placeholderData: keepPreviousData,
+    enabled: students.length > 0 || courses.length > 0 || grades.length > 0,
   });
 }

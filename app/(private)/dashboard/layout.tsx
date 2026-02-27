@@ -8,12 +8,14 @@ import {
   DashboardSidebar,
 } from '@/components/dashboard';
 import { cn } from '@/lib/utils';
+import { useHydrateStore } from '@/hooks/use-hydrate-store';
 
 export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useHydrateStore();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
 

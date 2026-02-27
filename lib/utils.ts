@@ -25,3 +25,14 @@ export function generateQueryString(params: Record<string, string>) {
 
   return `?${queryString}`;
 }
+
+export function getYearsFrom2020(): number[] {
+  const currentYear = new Date().getFullYear();
+  const years: number[] = [];
+
+  for (let year = 2020; year <= currentYear; year++) {
+    years.push(year);
+  }
+
+  return years;
+}
