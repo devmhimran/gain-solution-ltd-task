@@ -1,4 +1,4 @@
-import { BookOpen, ChartColumnBig, Users } from 'lucide-react';
+import { BookOpen, ChartColumnBig, ClipboardMinus, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -18,6 +18,11 @@ export const navList = [
     name: 'Courses',
     link: '/dashboard/courses',
     icon: BookOpen,
+  },
+  {
+    name: 'Reporting & Exporting',
+    link: '/dashboard/reporting',
+    icon: ClipboardMinus,
   },
 ];
 
