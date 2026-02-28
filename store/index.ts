@@ -5,6 +5,7 @@ interface IStore {
   students: IStudent[];
   setStudents: (students: IStudent[]) => void;
   addStudent: (student: IStudent) => void;
+  updateStudent: (student: IStudent) => void;
   deleteStudent: (studentId: string) => void;
 
   courses: ICourse[];
@@ -32,6 +33,11 @@ export const useStore = create<IStore>((set) => ({
   addStudent: (student) =>
     set((state) => ({
       students: [...state.students, student],
+    })),
+
+  updateStudent: (student) =>
+    set((state) => ({
+      students: state.students.map((s) => (s.id === student.id ? student : s)),
     })),
   deleteStudent: (studentId) =>
     set((state) => ({
