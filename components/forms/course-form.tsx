@@ -17,8 +17,6 @@ const courseSchema = z.object({
     )
     .min(1, 'Select at least one faculty'),
 
-  enrolledCount: z.number().min(0),
-
   metadata: z.array(
     z.object({
       key: z.string().min(1, 'Key is required'),
@@ -32,7 +30,6 @@ type CourseFormValues = z.infer<typeof courseSchema>;
 type CourseData = {
   name: string;
   facultyIds: string[];
-  enrolledCount: number;
   metadata: { key: string; value: string }[];
 };
 
@@ -54,7 +51,6 @@ export function CourseForm({ initialData, onSubmit }: CourseFormProps) {
       : {
           name: '',
           facultyIds: [{ id: '' }],
-          enrolledCount: 0,
           metadata: [],
         },
   });
@@ -96,15 +92,6 @@ export function CourseForm({ initialData, onSubmit }: CourseFormProps) {
       <div>
         <Input label='Course Name' {...form.register('name')} />
         <FieldError errors={form.formState.errors} field='name' />
-      </div>
-
-      <div>
-        <Input
-          label='Enrolled Count'
-          type='number'
-          {...form.register('enrolledCount', { valueAsNumber: true })}
-        />
-        <FieldError errors={form.formState.errors} field='enrolledCount' />
       </div>
 
       <div className='space-y-2 p-3 border border-gray-300 rounded-md bg-slate-50'>

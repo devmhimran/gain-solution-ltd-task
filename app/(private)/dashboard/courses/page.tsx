@@ -30,6 +30,7 @@ export default function CoursesPage() {
 
   const queryString = generateQueryString(params);
   const { data, isLoading } = useGetCourses(queryString);
+  console.log({ data });
 
   useEffect(() => {
     router.push(queryString);

@@ -11,21 +11,18 @@
       "id": "c1",
       "name": "Advanced React",
       "facultyIds": ["f1", "f2"],
-      "enrolledCount": 45,
       "metadata": [{ "key": "room", "value": "302" }]
     },
     {
       "id": "c2",
       "name": "Node.js Fundamentals",
       "facultyIds": ["f2"],
-      "enrolledCount": 30,
       "metadata": [{ "key": "level", "value": "Intermediate" }]
     },
     {
       "id": "c3",
       "name": "Database Design",
       "facultyIds": ["f1", "f3"],
-      "enrolledCount": 50,
       "metadata": [{ "key": "lab", "value": "Required" }]
     }
   ],

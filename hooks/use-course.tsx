@@ -42,7 +42,6 @@ export function useCourses() {
       return courseId;
     },
     onSuccess: (courseId) => {
-      // Implement delete logic in the store
       deleteCourseFromStore(courseId);
       queryClient.invalidateQueries({ queryKey: ['courses'] });
     },
@@ -62,6 +61,7 @@ export function useCourses() {
 
 export function useGetCourses(params?: string) {
   const courses = useStore((state) => state.courses);
+  const grades = useStore((state) => state.grades);
   const faculties = useStore((state) => state.faculties);
 
   return useQuery({
@@ -76,7 +76,12 @@ export function useGetCourses(params?: string) {
         const faculty = course.facultyIds
           .map((id: string) => faculties.find((f) => f.id === id))
           .filter((f): f is IFaculty => Boolean(f));
-        return { ...course, faculty };
+
+        const gradesCount = grades
+          .map((g) => g.courseId === course.id)
+          .filter(Boolean).length;
+
+        return { ...course, faculty, enrolledCount: gradesCount };
       });
 
       if (search) {
