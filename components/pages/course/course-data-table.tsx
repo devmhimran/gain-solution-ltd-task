@@ -1,8 +1,8 @@
-import { IApiResponse, ICourse } from '@/types';
+import { IApiResponse, ICourseWithFaculty } from '@/types';
 import { Ellipsis } from 'lucide-react';
 
 interface CourseDataTableProps {
-  data?: IApiResponse<ICourse[]>;
+  data?: IApiResponse<ICourseWithFaculty[]>;
 }
 
 export function CourseDataTable({ data }: CourseDataTableProps) {

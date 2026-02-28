@@ -1,7 +1,7 @@
 'use client';
 
 import { CourseDataTable, CoursePageHeader } from '@/components/pages/course';
-import { useGetCourses } from '@/hooks/use-course';
+import { useGetCourses } from '@/hooks';
 import { generateQueryString } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';

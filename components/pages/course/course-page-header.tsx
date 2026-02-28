@@ -1,5 +1,10 @@
-import { Button, Input } from '@/components/shared';
+'use client';
+
+import { CourseForm } from '@/components/forms';
+import { Button, Input, Modal } from '@/components/shared';
+import { useCourses } from '@/hooks';
 import { Plus } from 'lucide-react';
+import { useState } from 'react';
 
 interface CoursePageHeaderProps {
   searchQuery: string;
@@ -10,12 +15,17 @@ export function CoursePageHeader({
   searchQuery,
   searchQueryChange,
 }: CoursePageHeaderProps) {
+  const [open, setOpen] = useState(false);
+  const { createCourses } = useCourses();
+
   return (
     <>
       <div className='flex justify-between items-center'>
         <div className='text-slate-800 font-semibold text-2xl'>Courses</div>
         <div>
-          <Button leftIcon={<Plus />}>Create Course</Button>
+          <Button leftIcon={<Plus />} onClick={() => setOpen(true)}>
+            Create Course
+          </Button>
         </div>
       </div>
 
@@ -34,6 +44,11 @@ export function CoursePageHeader({
           </div>
         </div>
       </div>
+      <Modal isOpen={open} setIsOpen={setOpen} title='Course Form'>
+        <CourseForm
+          onSubmit={(data) => createCourses(data).then(() => setOpen(false))}
+        />
+      </Modal>
     </>
   );
 }
