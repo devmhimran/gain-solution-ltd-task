@@ -73,6 +73,7 @@ export function useGetStudents(params?: string) {
         return {
           ...student,
           courses: enrolledCourses,
+          grades: studentGrades,
         };
       });
 

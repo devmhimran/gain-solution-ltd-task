@@ -45,7 +45,7 @@ export default function DashboardLayout({
       <DashboardHeader setOpen={setIsOpen} open={isOpen} />
       <div className={cn('lg:flex block')}>
         <DashboardSidebar />
-        <div className='py-5 px-3 lg:px-10 h-[calc(100vh-80px)] w-full flex flex-col overflow-y-auto bg-slate-50/60'>
+        <div className='py-5 px-3 lg:px-10 h-[calc(100vh-80px)] w-full flex flex-col overflow-y-auto bg-slate-100/50'>
           {children}
         </div>
       </div>
