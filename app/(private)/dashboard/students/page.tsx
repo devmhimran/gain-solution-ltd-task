@@ -4,6 +4,7 @@ import {
   StudentDataTable,
   StudentPageHeader,
 } from '@/components/pages/students';
+import { StudentTableSkeleton } from '@/components/skeletons';
 import { useGetStudents } from '@/hooks/use-students';
 import { generateQueryString } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -39,8 +40,6 @@ export default function StudentsPage() {
     router.push(queryString);
   }, [queryString, router]);
 
-  if (isLoading) return <div>Loading...</div>;
-
   return (
     <div className='space-y-10 w-full xl:w-8/12 mx-auto'>
       <StudentPageHeader
@@ -58,7 +57,7 @@ export default function StudentsPage() {
         }
       />
 
-      <StudentDataTable data={data} />
+      {!isLoading ? <StudentDataTable data={data} /> : <StudentTableSkeleton />}
     </div>
   );
 }

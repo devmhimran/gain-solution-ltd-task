@@ -5,7 +5,8 @@ import { Button, Modal } from '@/components/shared';
 import { useStudents } from '@/hooks';
 import { IApiResponse, IStudentWithCourses } from '@/types';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { Ellipsis, SquarePen, Trash } from 'lucide-react';
+import { Ellipsis, Eye, SquarePen, Trash } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 interface StudentDataTableProps {
@@ -122,6 +123,15 @@ export function StudentDataTable({ data }: StudentDataTableProps) {
                     anchor='bottom'
                     className='bg-slate-100 rounded w-24'
                   >
+                    <MenuItem>
+                      <Link href={`/dashboard/students/${student.id}`}>
+                        <div className='text-sm px-3 py-2 block data-focus:bg-blue-100 cursor-pointer'>
+                          <Eye className='inline mr-2 w-4 h-4' />
+                          View
+                        </div>
+                      </Link>
+                    </MenuItem>
+                    <hr className='text-gray-200' />
                     <MenuItem>
                       <div
                         className='text-sm px-3 py-2 block data-focus:bg-blue-100 cursor-pointer'

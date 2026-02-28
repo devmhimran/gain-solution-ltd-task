@@ -1,6 +1,7 @@
 'use client';
 
 import { CourseDataTable, CoursePageHeader } from '@/components/pages/course';
+import { CourseTableSkeleton } from '@/components/skeletons';
 import { useGetCourses } from '@/hooks';
 import { generateQueryString } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -30,13 +31,10 @@ export default function CoursesPage() {
 
   const queryString = generateQueryString(params);
   const { data, isLoading } = useGetCourses(queryString);
-  console.log({ data });
 
   useEffect(() => {
     router.push(queryString);
   }, [queryString, router]);
-
-  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className='space-y-10 w-full md:w-4/6 mx-auto'>
@@ -47,7 +45,7 @@ export default function CoursesPage() {
           debounced(e.target.value);
         }}
       />
-      <CourseDataTable data={data} />
+      {!isLoading ? <CourseDataTable data={data} /> : <CourseTableSkeleton />}
     </div>
   );
 }

@@ -10,12 +10,25 @@ export interface IStudentWithCourses extends IStudent {
   grades: IGrades[];
 }
 
+export interface IStudentWithCourseFaculty extends IStudent {
+  courses: ICourseWithFaculty[];
+  grades: IGrades[];
+}
+
+export interface IStudentDetails extends IStudent {
+  courses: ICourseWithFaculty[];
+  metadata: IMetadata[];
+}
+
+export interface IMetadata {
+  key: string;
+  value: string;
+}
 export interface ICourse {
   id: string;
   name: string;
   facultyIds: string[];
-
-  metadata: { key: string; value: string }[];
+  metadata: IMetadata[];
 }
 
 export interface ICourseWithFaculty extends ICourse {

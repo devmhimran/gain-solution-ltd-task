@@ -8,6 +8,7 @@ import {
   IGrades,
   IStudent,
   IStudentWithCourses,
+  IStudentWithCourseFaculty,
   StudentFormValues,
 } from '@/types';
 
@@ -187,5 +188,44 @@ export function useGetStudents(params?: string) {
     },
     placeholderData: keepPreviousData,
     enabled: students.length > 0 || courses.length > 0 || grades.length > 0,
+  });
+}
+
+export function useGetStudentById(studentId: string) {
+  const students = useStore((state) => state.students);
+  const courses = useStore((state) => state.courses);
+  const grades = useStore((state) => state.grades);
+  const faculties = useStore((state) => state.faculties);
+
+  return useQuery<IStudentWithCourseFaculty | null>({
+    queryKey: ['student', studentId, students, courses, grades, faculties],
+    queryFn: async () => {
+      const student = students.find((s) => s.id === studentId);
+      if (!student) return null;
+
+      const studentGrades = grades.filter((g) => g.studentId === studentId);
+
+      const enrolledCourses = courses.filter((course) =>
+        studentGrades.find((g) => g.courseId === course.id),
+      );
+
+      const enrolledCoursesWithFaculty = enrolledCourses.map((course) => {
+        const courseFacultyObjs = faculties.filter((f) =>
+          course.facultyIds.includes(f.id),
+        );
+        return {
+          ...course,
+          faculty: courseFacultyObjs,
+          enrolledCount: grades.filter((g) => g.courseId === course.id).length,
+        };
+      });
+
+      return {
+        ...student,
+        courses: enrolledCoursesWithFaculty,
+        grades: studentGrades,
+        gpa: calculateGpa(studentGrades),
+      } as IStudentWithCourseFaculty;
+    },
   });
 }
