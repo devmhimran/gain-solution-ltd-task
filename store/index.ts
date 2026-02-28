@@ -9,6 +9,8 @@ interface IStore {
   courses: ICourse[];
   setCourses: (courses: ICourse[]) => void;
   addCourse: (course: ICourse) => void;
+  updateCourse: (course: ICourse) => void;
+  deleteCourse: (courseId: string) => void;
 
   faculties: IFaculty[];
   setFaculties: (faculty: IFaculty[]) => void;
@@ -35,6 +37,16 @@ export const useStore = create<IStore>((set) => ({
   addCourse: (course) =>
     set((state) => ({
       courses: [...state.courses, course],
+    })),
+  updateCourse: (updatedCourse) =>
+    set((state) => ({
+      courses: state.courses.map((course) =>
+        course.id === updatedCourse.id ? updatedCourse : course,
+      ),
+    })),
+  deleteCourse: (courseId) =>
+    set((state) => ({
+      courses: state.courses.filter((course) => course.id !== courseId),
     })),
 
   setFaculties: (faculties) => set({ faculties }),

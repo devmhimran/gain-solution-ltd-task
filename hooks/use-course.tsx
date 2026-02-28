@@ -12,6 +12,8 @@ import {
 export function useCourses() {
   const queryClient = useQueryClient();
   const addCourseToStore = useStore((state) => state.addCourse);
+  const updateCourseToStore = useStore((state) => state.updateCourse);
+  const deleteCourseFromStore = useStore((state) => state.deleteCourse);
   const courses = useStore((state) => state.courses);
 
   const createCourses = useMutation({
@@ -25,9 +27,36 @@ export function useCourses() {
     },
   });
 
+  const updateCourse = useMutation({
+    mutationFn: async (updatedCourse: ICourse) => {
+      return updatedCourse;
+    },
+    onSuccess: (data) => {
+      updateCourseToStore(data);
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
+    },
+  });
+
+  const deleteCourse = useMutation({
+    mutationFn: async (courseId: string) => {
+      return courseId;
+    },
+    onSuccess: (courseId) => {
+      // Implement delete logic in the store
+      deleteCourseFromStore(courseId);
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
+    },
+  });
+
   return {
     createCourses: createCourses.mutateAsync,
     isCreating: createCourses.isPending,
+
+    updateCourse: updateCourse.mutateAsync,
+    isUpdating: updateCourse.isPending,
+
+    deleteCourse: deleteCourse.mutateAsync,
+    isDeleting: deleteCourse.isPending,
   };
 }
 

@@ -1,12 +1,26 @@
+'use client';
+
+import { CourseForm } from '@/components/forms';
+import { Button, Modal } from '@/components/shared';
+import { useCourses } from '@/hooks';
 import { IApiResponse, ICourseWithFaculty } from '@/types';
-import { Ellipsis } from 'lucide-react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { Ellipsis, SquarePen, Trash } from 'lucide-react';
+import { useState } from 'react';
 
 interface CourseDataTableProps {
   data?: IApiResponse<ICourseWithFaculty[]>;
 }
 
 export function CourseDataTable({ data }: CourseDataTableProps) {
+  const [open, setOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] =
+    useState<ICourseWithFaculty | null>(null);
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const courses = data?.data || [];
+
+  const { updateCourse, deleteCourse } = useCourses();
 
   if (courses.length === 0) {
     return (
@@ -15,6 +29,16 @@ export function CourseDataTable({ data }: CourseDataTableProps) {
       </div>
     );
   }
+
+  const handleUpdateCourse = (course: ICourseWithFaculty) => {
+    setOpen(true);
+    setSelectedCourse(course);
+  };
+
+  const handleDeleteCourse = (courseId: string) => {
+    setDeleteOpen(true);
+    setSelectedCourseId(courseId);
+  };
 
   return (
     <div className='overflow-x-auto rounded-lg border border-gray-200 shadow-sm'>
@@ -79,13 +103,72 @@ export function CourseDataTable({ data }: CourseDataTableProps) {
                   {course.enrolledCount} students
                 </span>
               </td>
-              <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 '>
-                <Ellipsis className='w-5 h-5 text-slate-600 mx-auto' />
+              <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex justify-center'>
+                <Menu>
+                  <MenuButton className='p-2 rounded-full hover:bg-gray-100 transition-colors'>
+                    <Ellipsis className='w-5 h-5 text-slate-600 mx-auto' />
+                  </MenuButton>
+                  <MenuItems
+                    anchor='bottom'
+                    className='bg-slate-100 rounded w-24'
+                  >
+                    <MenuItem>
+                      <div
+                        className='text-sm px-3 py-2 block data-focus:bg-blue-100 cursor-pointer'
+                        onClick={() => handleUpdateCourse(course)}
+                      >
+                        <SquarePen className='inline mr-2 w-4 h-4' />
+                        Edit
+                      </div>
+                    </MenuItem>
+                    <hr className='text-gray-200' />
+                    <MenuItem>
+                      <div
+                        className='text-sm px-3 py-2 block data-focus:bg-blue-100 cursor-pointer'
+                        onClick={() => handleDeleteCourse(course.id)}
+                      >
+                        <Trash className='inline mr-2 w-4 h-4' />
+                        Delete
+                      </div>
+                    </MenuItem>
+                  </MenuItems>
+                </Menu>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Modal isOpen={open} setIsOpen={setOpen} title='Course Form'>
+        <CourseForm
+          initialData={selectedCourse || undefined}
+          onSubmit={(data) => {
+            updateCourse({ ...data, id: selectedCourse?.id || '' });
+            setOpen(false);
+          }}
+        />
+      </Modal>
+      <Modal
+        isOpen={deleteOpen}
+        setIsOpen={setDeleteOpen}
+        title='Confirm Deletion'
+        description='  Are you sure you want to delete this course? This action cannot be undone.'
+      >
+        <div className='flex justify-end gap-4'>
+          <Button variant='secondary' onClick={() => setDeleteOpen(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant='danger'
+            onClick={() => {
+              deleteCourse(selectedCourseId || '');
+              setDeleteOpen(false);
+            }}
+          >
+            Delete
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

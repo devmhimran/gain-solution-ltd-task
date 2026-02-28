@@ -12,21 +12,21 @@
       "name": "Advanced React",
       "facultyIds": ["f1", "f2"],
       "enrolledCount": 45,
-      "metadata": { "room": "302", "credits": "4" }
+      "metadata": [{ "key": "room", "value": "302" }]
     },
     {
       "id": "c2",
       "name": "Node.js Fundamentals",
       "facultyIds": ["f2"],
       "enrolledCount": 30,
-      "metadata": { "level": "Intermediate" }
+      "metadata": [{ "key": "level", "value": "Intermediate" }]
     },
     {
       "id": "c3",
       "name": "Database Design",
       "facultyIds": ["f1", "f3"],
       "enrolledCount": 50,
-      "metadata": { "lab": "Required" }
+      "metadata": [{ "key": "lab", "value": "Required" }]
     }
   ],
   "faculty": [
