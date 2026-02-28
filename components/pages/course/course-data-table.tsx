@@ -15,8 +15,10 @@ interface CourseDataTableProps {
 export function CourseDataTable({ data }: CourseDataTableProps) {
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] =
-    useState<ICourseWithFaculty | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<Omit<
+    ICourseWithFaculty,
+    'enrolledCount'
+  > | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const courses = data?.data || [];
 

@@ -14,12 +14,13 @@ export interface ICourse {
   id: string;
   name: string;
   facultyIds: string[];
-  enrolledCount: number;
+
   metadata: { key: string; value: string }[];
 }
 
 export interface ICourseWithFaculty extends ICourse {
   faculty: IFaculty[];
+  enrolledCount: number;
 }
 
 export interface IGrades {
