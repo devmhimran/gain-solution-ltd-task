@@ -41,6 +41,16 @@ All components are stored in a central `components` folder, subdivided by domain
 
 Install Dependencies Download all required packages:
 
+### Prerequisite: Install pnpm
+
+Before installing the project, ensure you have **pnpm** installed globally:
+
+```bash
+npm install -g pnpm@latest-10
+```
+
+Install Dependencies
+
 ```bash
 pnpm install
 ```
