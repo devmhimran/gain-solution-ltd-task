@@ -1,8 +1,15 @@
 'use client';
 
+import { calculateGpa } from '@/lib/utils';
 import { useStore } from '@/store';
 
-import { ICourse, IGrades, IStudent } from '@/types';
+import {
+  ICourse,
+  IGrades,
+  IStudent,
+  IStudentWithCourses,
+  StudentFormValues,
+} from '@/types';
 
 import {
   keepPreviousData,
@@ -13,16 +20,78 @@ import {
 
 export function useStudents() {
   const queryClient = useQueryClient();
+  const getStudentsFromStore = useStore((state) => state.students);
   const addStudentToStore = useStore((state) => state.addStudent);
+  const updateStudentToStore = useStore((state) => state.updateStudent);
+  const addGrade = useStore((state) => state.addGrade);
+  const deleteGradesByStudentId = useStore(
+    (state) => state.deleteGradesByStudentId,
+  );
   const deleteStudentFromStore = useStore((state) => state.deleteStudent);
 
-  const createStudents = useMutation({
-    mutationFn: async (newStudent: Omit<IStudent, 'id'>) => {
-      const mockId = Math.random().toString(36).substr(2, 9);
-      return { ...newStudent, id: mockId };
+  const createStudent = useMutation({
+    mutationFn: async (data: StudentFormValues) => {
+      const studentId = `s${getStudentsFromStore.length + 1}`;
+
+      return {
+        studentId,
+        data,
+      };
     },
-    onSuccess: (data) => {
-      addStudentToStore(data);
+    onSuccess: ({ studentId, data }) => {
+      addStudentToStore({
+        id: studentId,
+        name: data.name,
+        year: data.year,
+        gpa: calculateGpa(data.grades),
+      });
+
+      data.grades.forEach((g) =>
+        addGrade({
+          id: crypto.randomUUID(),
+          studentId,
+          courseId: g.courseId,
+          grade: g.grade,
+          term: g.term,
+        }),
+      );
+
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+    },
+  });
+
+  const updateStudent = useMutation({
+    mutationFn: async ({
+      studentId,
+      data,
+    }: {
+      studentId: string;
+      data: StudentFormValues;
+    }) => {
+      return {
+        studentId,
+        data,
+      };
+    },
+    onSuccess: ({ studentId, data }) => {
+      updateStudentToStore({
+        id: studentId,
+        name: data.name,
+        year: data.year,
+        gpa: calculateGpa(data.grades),
+      });
+
+      deleteGradesByStudentId(studentId);
+      data.grades.forEach((g) =>
+        addGrade({
+          id: crypto.randomUUID(),
+          studentId,
+          courseId: g.courseId,
+          grade: g.grade,
+          term: g.term,
+        }),
+      );
+
       queryClient.invalidateQueries({ queryKey: ['students'] });
     },
   });
@@ -38,8 +107,11 @@ export function useStudents() {
   });
 
   return {
-    createStudents: createStudents.mutateAsync,
-    isCreating: createStudents.isPending,
+    createStudents: createStudent.mutateAsync,
+    isCreating: createStudent.isPending,
+
+    updateStudent: updateStudent.mutateAsync,
+    isUpdating: updateStudent.isPending,
 
     deleteStudent: deleteStudent.mutateAsync,
     isDeleting: deleteStudent.isPending,
@@ -74,12 +146,13 @@ export function useGetStudents(params?: string) {
           ...student,
           courses: enrolledCourses,
           grades: studentGrades,
+          gpa: calculateGpa(studentGrades),
         };
       });
 
       if (search) {
         result = result.filter(
-          (student: IStudent) =>
+          (student: IStudentWithCourses) =>
             student.name.toLowerCase().includes(search) ||
             student.courses.some((course: ICourse) =>
               course.name.toLowerCase().includes(search),
@@ -88,7 +161,7 @@ export function useGetStudents(params?: string) {
       }
 
       if (course) {
-        result = result.filter((student: IStudent) =>
+        result = result.filter((student: IStudentWithCourses) =>
           student.courses.some((c: ICourse) =>
             c.name.toLowerCase().includes(course),
           ),

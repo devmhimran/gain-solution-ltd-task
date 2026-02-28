@@ -5,6 +5,7 @@ interface IStore {
   students: IStudent[];
   setStudents: (students: IStudent[]) => void;
   addStudent: (student: IStudent) => void;
+  updateStudent: (student: IStudent) => void;
   deleteStudent: (studentId: string) => void;
 
   courses: ICourse[];
@@ -20,6 +21,7 @@ interface IStore {
   grades: IGrades[];
   setGrades: (grades: IGrades[]) => void;
   addGrade: (grade: IGrades) => void;
+  deleteGradesByStudentId: (studentId: string) => void;
 }
 
 export const useStore = create<IStore>((set) => ({
@@ -32,6 +34,11 @@ export const useStore = create<IStore>((set) => ({
   addStudent: (student) =>
     set((state) => ({
       students: [...state.students, student],
+    })),
+
+  updateStudent: (student) =>
+    set((state) => ({
+      students: state.students.map((s) => (s.id === student.id ? student : s)),
     })),
   deleteStudent: (studentId) =>
     set((state) => ({
@@ -64,5 +71,9 @@ export const useStore = create<IStore>((set) => ({
   addGrade: (grade) =>
     set((state) => ({
       grades: [...state.grades, grade],
+    })),
+  deleteGradesByStudentId: (studentId) =>
+    set((state) => ({
+      grades: state.grades.filter((grade) => grade.studentId !== studentId),
     })),
 }));

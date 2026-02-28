@@ -1,7 +1,12 @@
-import { Button, Input } from '@/components/shared';
+'use client';
+
+import { StudentForm } from '@/components/forms';
+import { Button, Input, Modal } from '@/components/shared';
+import { useStudents } from '@/hooks';
 import { getYearsFrom2020 } from '@/lib/utils';
 import { Select } from '@headlessui/react';
 import { Plus } from 'lucide-react';
+import { useState } from 'react';
 
 interface StudentPageHeaderProps {
   searchQuery: string;
@@ -14,12 +19,17 @@ export function StudentPageHeader({
   searchQueryChange,
   setParams,
 }: StudentPageHeaderProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { createStudents } = useStudents();
   return (
     <>
       <div className='flex justify-between items-center'>
         <div className='text-slate-800 font-semibold text-2xl'>Students</div>
         <div>
-          <Button leftIcon={<Plus />}>Create Student</Button>
+          <Button leftIcon={<Plus />} onClick={() => setIsOpen(true)}>
+            Create Student
+          </Button>
         </div>
       </div>
 
@@ -48,9 +58,7 @@ export function StudentPageHeader({
             focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all'
             onChange={setParams}
           >
-            <option value='' selected>
-              Select year
-            </option>
+            <option value=''>Select year</option>
             {getYearsFrom2020().map((year) => (
               <option key={year} value={year} className='text-sm'>
                 {year}
@@ -59,6 +67,13 @@ export function StudentPageHeader({
           </Select>
         </div>
       </div>
+
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Create New Student'>
+        <StudentForm
+          mode='create'
+          onSubmit={(data) => createStudents(data).then(() => setIsOpen(false))}
+        />
+      </Modal>
     </>
   );
 }

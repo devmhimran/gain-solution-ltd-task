@@ -42,7 +42,7 @@ export default function StudentsPage() {
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className='space-y-10 w-full xl:w-4/6 mx-auto'>
+    <div className='space-y-10 w-full xl:w-8/12 mx-auto'>
       <StudentPageHeader
         searchQuery={searchQuery}
         searchQueryChange={(e) => {
