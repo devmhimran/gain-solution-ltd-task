@@ -5,6 +5,7 @@ interface IStore {
   students: IStudent[];
   setStudents: (students: IStudent[]) => void;
   addStudent: (student: IStudent) => void;
+  deleteStudent: (studentId: string) => void;
 
   courses: ICourse[];
   setCourses: (courses: ICourse[]) => void;
@@ -31,6 +32,10 @@ export const useStore = create<IStore>((set) => ({
   addStudent: (student) =>
     set((state) => ({
       students: [...state.students, student],
+    })),
+  deleteStudent: (studentId) =>
+    set((state) => ({
+      students: state.students.filter((student) => student.id !== studentId),
     })),
 
   setCourses: (courses) => set({ courses }),

@@ -14,6 +14,7 @@ import {
 export function useStudents() {
   const queryClient = useQueryClient();
   const addStudentToStore = useStore((state) => state.addStudent);
+  const deleteStudentFromStore = useStore((state) => state.deleteStudent);
 
   const createStudents = useMutation({
     mutationFn: async (newStudent: Omit<IStudent, 'id'>) => {
@@ -26,9 +27,22 @@ export function useStudents() {
     },
   });
 
+  const deleteStudent = useMutation({
+    mutationFn: async (studentId: string) => {
+      return studentId;
+    },
+    onSuccess: (studentId) => {
+      deleteStudentFromStore(studentId);
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+    },
+  });
+
   return {
     createStudents: createStudents.mutateAsync,
     isCreating: createStudents.isPending,
+
+    deleteStudent: deleteStudent.mutateAsync,
+    isDeleting: deleteStudent.isPending,
   };
 }
 
@@ -38,7 +52,7 @@ export function useGetStudents(params?: string) {
   const grades = useStore((state) => state.grades);
 
   return useQuery({
-    queryKey: ['students', params],
+    queryKey: ['students', params, students, courses, grades],
     queryFn: async () => {
       const searchParams = new URLSearchParams(params);
       const search = searchParams.get('search')?.toLowerCase();

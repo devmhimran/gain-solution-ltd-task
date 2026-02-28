@@ -1,12 +1,24 @@
+'use client';
+
+import { Button, Modal } from '@/components/shared';
+import { useStudents } from '@/hooks';
 import { IApiResponse, IStudent } from '@/types';
-import { Ellipsis } from 'lucide-react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { Ellipsis, SquarePen, Trash } from 'lucide-react';
+import { useState } from 'react';
 
 interface StudentDataTableProps {
   data?: IApiResponse<IStudent[]>;
 }
 
 export function StudentDataTable({ data }: StudentDataTableProps) {
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
+    null,
+  );
   const students = data?.data || [];
+
+  const { deleteStudent } = useStudents();
 
   if (students.length === 0) {
     return (
@@ -15,6 +27,11 @@ export function StudentDataTable({ data }: StudentDataTableProps) {
       </div>
     );
   }
+
+  const handleDeleteStudent = (studentId: string) => {
+    setDeleteOpen(true);
+    setSelectedStudentId(studentId);
+  };
 
   return (
     <div className='overflow-x-auto rounded-lg border border-gray-200 shadow-sm'>
@@ -85,13 +102,62 @@ export function StudentDataTable({ data }: StudentDataTableProps) {
                   <span className='text-gray-400 italic'>No courses</span>
                 )}
               </td>
-              <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 '>
-                <Ellipsis className='w-5 h-5 text-slate-600 mx-auto' />
+              <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex justify-center'>
+                <Menu>
+                  <MenuButton className='p-2 rounded-full hover:bg-gray-100 transition-colors'>
+                    <Ellipsis className='w-5 h-5 text-slate-600 mx-auto' />
+                  </MenuButton>
+                  <MenuItems
+                    anchor='bottom'
+                    className='bg-slate-100 rounded w-24'
+                  >
+                    <MenuItem>
+                      <div
+                        className='text-sm px-3 py-2 block data-focus:bg-blue-100 cursor-pointer'
+                        // onClick={() => handleUpdateCourse(course)}
+                      >
+                        <SquarePen className='inline mr-2 w-4 h-4' />
+                        Edit
+                      </div>
+                    </MenuItem>
+                    <hr className='text-gray-200' />
+                    <MenuItem>
+                      <div
+                        className='text-sm px-3 py-2 block data-focus:bg-blue-100 cursor-pointer'
+                        onClick={() => handleDeleteStudent(student.id)}
+                      >
+                        <Trash className='inline mr-2 w-4 h-4' />
+                        Delete
+                      </div>
+                    </MenuItem>
+                  </MenuItems>
+                </Menu>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <Modal
+        isOpen={deleteOpen}
+        setIsOpen={setDeleteOpen}
+        title='Confirm Deletion'
+        description='  Are you sure you want to delete this student? This action cannot be undone.'
+      >
+        <div className='flex justify-end gap-4'>
+          <Button variant='secondary' onClick={() => setDeleteOpen(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant='danger'
+            onClick={() => {
+              deleteStudent(selectedStudentId || '');
+              setDeleteOpen(false);
+            }}
+          >
+            Delete
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }
