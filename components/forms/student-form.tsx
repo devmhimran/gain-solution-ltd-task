@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { StudentFormValues } from '@/types';
 import { Button, FieldError, Input } from '../shared';
 import { X } from 'lucide-react';
+import { useStore } from '@/store';
 
 const studentSchema = z.object({
   name: z
@@ -23,25 +24,20 @@ const studentSchema = z.object({
   grades: z.array(
     z.object({
       courseId: z.string().min(1, 'Course ID is required'),
-      grade: z
-        .string()
-        .min(1, 'Grade is required')
-        .regex(
-          /^[A-F][+-]?$/i,
-          'Grade must be A-F with optional + or - (e.g., A, B+, C-)',
-        ),
+      grade: z.string().min(1, 'Please select a valid grade'),
       term: z.string().min(1, 'Term is required'),
     }),
   ),
 });
 
 interface Props {
-  defaultValues?: StudentFormValues;
+  defaultValues?: StudentFormValues | null;
   onSubmit: (data: StudentFormValues) => void;
   mode: 'create' | 'update';
 }
 
 export function StudentForm({ defaultValues, onSubmit, mode }: Props) {
+  const course = useStore((state) => state.courses);
   const { register, control, handleSubmit, formState } =
     useForm<StudentFormValues>({
       resolver: zodResolver(studentSchema),
@@ -84,20 +80,38 @@ export function StudentForm({ defaultValues, onSubmit, mode }: Props) {
             <div className='w-full space-y-2'>
               <div className='flex gap-2 '>
                 <div className='w-full space-y-1'>
-                  <Input
-                    placeholder='Course ID'
+                  <select
                     {...register(`grades.${index}.courseId`)}
-                  />
+                    className='w-full border border-gray-300 rounded-md bg-white px-3 py-2.5 text-sm 
+                    ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 
+                    focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all h-10'
+                  >
+                    <option value=''>Select course</option>
+                    {course.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
                   <FieldError
                     errors={formState.errors}
                     field={`grades.${index}.courseId`}
                   />
                 </div>
                 <div className='w-full space-y-1'>
-                  <Input
-                    placeholder='Grade (A, B+...)'
+                  <select
                     {...register(`grades.${index}.grade`)}
-                  />
+                    className='w-full border border-gray-300 rounded-md bg-white px-3 py-2.5 text-sm 
+                    ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 
+                    focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all h-10'
+                  >
+                    <option value=''>Select grade</option>
+                    <option value='A+'>A+</option>
+                    <option value='A'>A</option>
+                    <option value='A-'>A-</option>
+                    <option value='B+'>B+</option>
+                    <option value='B'>B</option>
+                  </select>
                   <FieldError
                     errors={formState.errors}
                     field={`grades.${index}.grade`}

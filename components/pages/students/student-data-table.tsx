@@ -1,5 +1,6 @@
 'use client';
 
+import { StudentForm } from '@/components/forms';
 import { Button, Modal } from '@/components/shared';
 import { useStudents } from '@/hooks';
 import { IApiResponse, IStudentWithCourses } from '@/types';
@@ -13,12 +14,15 @@ interface StudentDataTableProps {
 
 export function StudentDataTable({ data }: StudentDataTableProps) {
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [updateOpen, setUpdateOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] =
+    useState<IStudentWithCourses | null>(null);
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
     null,
   );
   const students = data?.data || [];
 
-  const { deleteStudent } = useStudents();
+  const { deleteStudent, updateStudent } = useStudents();
 
   if (students.length === 0) {
     return (
@@ -27,6 +31,11 @@ export function StudentDataTable({ data }: StudentDataTableProps) {
       </div>
     );
   }
+
+  const handleUpdateStudent = (student: IStudentWithCourses) => {
+    setUpdateOpen(true);
+    setSelectedStudent(student);
+  };
 
   const handleDeleteStudent = (studentId: string) => {
     setDeleteOpen(true);
@@ -80,7 +89,9 @@ export function StudentDataTable({ data }: StudentDataTableProps) {
                         : 'bg-yellow-100 text-yellow-800'
                   }`}
                 >
-                  {student.gpa.toFixed(1)}
+                  {student?.gpa?.toFixed(1) === '0.0'
+                    ? 'N/A'
+                    : student?.gpa?.toFixed(1) || 'N/A'}
                 </span>
               </td>
               <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
@@ -114,7 +125,7 @@ export function StudentDataTable({ data }: StudentDataTableProps) {
                     <MenuItem>
                       <div
                         className='text-sm px-3 py-2 block data-focus:bg-blue-100 cursor-pointer'
-                        // onClick={() => handleUpdateCourse(course)}
+                        onClick={() => handleUpdateStudent(student)}
                       >
                         <SquarePen className='inline mr-2 w-4 h-4' />
                         Edit
@@ -157,6 +168,35 @@ export function StudentDataTable({ data }: StudentDataTableProps) {
             Delete
           </Button>
         </div>
+      </Modal>
+      <Modal
+        isOpen={updateOpen}
+        setIsOpen={setUpdateOpen}
+        title='Update Student'
+        description='  Update the student details.'
+      >
+        <StudentForm
+          mode='update'
+          defaultValues={
+            selectedStudent
+              ? {
+                  name: selectedStudent.name,
+                  year: selectedStudent.year,
+                  grades: selectedStudent.grades.map((g) => ({
+                    courseId: g.courseId,
+                    grade: g.grade,
+                    term: g.term,
+                  })),
+                }
+              : null
+          }
+          onSubmit={(data) =>
+            updateStudent({
+              studentId: selectedStudent?.id || '',
+              data,
+            }).then(() => setUpdateOpen(false))
+          }
+        />
       </Modal>
     </div>
   );

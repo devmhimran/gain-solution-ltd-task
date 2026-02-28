@@ -1,10 +1,10 @@
 {
   "students": [
-    { "id": "s1", "name": "John Doe", "gpa": 3.8, "year": 2024 },
-    { "id": "s2", "name": "Jane Smith", "gpa": 3.5, "year": 2025 },
-    { "id": "s3", "name": "Alex Johnson", "gpa": 3.9, "year": 2024 },
-    { "id": "s4", "name": "Emily Davis", "gpa": 3.2, "year": 2025 },
-    { "id": "s5", "name": "Michael Brown", "gpa": 3.6, "year": 2023 }
+    { "id": "s1", "name": "John Doe", "year": 2024 },
+    { "id": "s2", "name": "Jane Smith", "year": 2025 },
+    { "id": "s3", "name": "Alex Johnson", "year": 2024 },
+    { "id": "s4", "name": "Emily Davis", "year": 2025 },
+    { "id": "s5", "name": "Michael Brown", "year": 2023 }
   ],
   "courses": [
     {

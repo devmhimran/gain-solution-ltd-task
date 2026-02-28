@@ -68,13 +68,7 @@ export function StudentPageHeader({
         </div>
       </div>
 
-      <Modal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        title='Edit Profile'
-        description='Make changes to your profile here.'
-        reset={() => console.log('Form reset!')}
-      >
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Create New Student'>
         <StudentForm
           mode='create'
           onSubmit={(data) => createStudents(data).then(() => setIsOpen(false))}

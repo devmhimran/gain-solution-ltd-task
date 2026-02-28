@@ -7,6 +7,7 @@ export interface IStudent {
 
 export interface IStudentWithCourses extends IStudent {
   courses: ICourse[];
+  grades: IGrades[];
 }
 
 export interface ICourse {

@@ -21,6 +21,7 @@ interface IStore {
   grades: IGrades[];
   setGrades: (grades: IGrades[]) => void;
   addGrade: (grade: IGrades) => void;
+  deleteGradesByStudentId: (studentId: string) => void;
 }
 
 export const useStore = create<IStore>((set) => ({
@@ -70,5 +71,9 @@ export const useStore = create<IStore>((set) => ({
   addGrade: (grade) =>
     set((state) => ({
       grades: [...state.grades, grade],
+    })),
+  deleteGradesByStudentId: (studentId) =>
+    set((state) => ({
+      grades: state.grades.filter((grade) => grade.studentId !== studentId),
     })),
 }));
