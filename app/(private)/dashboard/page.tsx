@@ -154,7 +154,6 @@ export default function DashboardAnalytics() {
         setIsOpen={setIsOpen}
         title='Edit Profile'
         description='Make changes to your profile here.'
-        reset={() => console.log('Form reset!')}
       >
         <p>
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Deleniti,
