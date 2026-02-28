@@ -1,15 +1,36 @@
-import { FieldErrors, FieldPath, FieldValues } from 'react-hook-form';
+import {
+  FieldErrors,
+  FieldPath,
+  FieldValues,
+  FieldError as RHFFieldError,
+} from 'react-hook-form';
 
 interface FieldErrorProps<TFieldValues extends FieldValues> {
   errors: FieldErrors<TFieldValues>;
   field: FieldPath<TFieldValues>;
 }
 
+function getNestedError(
+  obj: FieldErrors<FieldValues>,
+  path: string,
+): RHFFieldError | undefined {
+  const keys = path.split('.');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let current: any = obj;
+
+  for (const key of keys) {
+    if (current === undefined || current === null) return undefined;
+    current = current[key];
+  }
+
+  return current as RHFFieldError | undefined;
+}
+
 export function FieldError<TFieldValues extends FieldValues>({
   errors,
   field,
 }: FieldErrorProps<TFieldValues>) {
-  const error = errors[field as keyof FieldErrors<TFieldValues>];
+  const error = getNestedError(errors, field as string);
   if (!error) return null;
 
   return (

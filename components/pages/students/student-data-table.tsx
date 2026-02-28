@@ -2,13 +2,13 @@
 
 import { Button, Modal } from '@/components/shared';
 import { useStudents } from '@/hooks';
-import { IApiResponse, IStudent } from '@/types';
+import { IApiResponse, IStudentWithCourses } from '@/types';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Ellipsis, SquarePen, Trash } from 'lucide-react';
 import { useState } from 'react';
 
 interface StudentDataTableProps {
-  data?: IApiResponse<IStudent[]>;
+  data?: IApiResponse<IStudentWithCourses[]>;
 }
 
 export function StudentDataTable({ data }: StudentDataTableProps) {
